@@ -27,8 +27,9 @@ RUN echo "# Calculator MCP Server Environment Variables" > .env && \
     echo "CALC_MAX_VALUE=1e15" >> .env && \
     echo "LOG_LEVEL=INFO" >> .env
 
-# Create non-root user for security
-RUN useradd --create-home --shell /bin/bash app && \
+# Create non-root user for security (Alpine syntax)
+RUN addgroup -g 1000 app && \
+    adduser -u 1000 -G app -s /bin/sh -D app && \
     chown -R app:app /app
 USER app
 
