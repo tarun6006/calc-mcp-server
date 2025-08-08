@@ -1,13 +1,14 @@
-# Use Python 3.13 slim image for smaller size and better performance
-FROM python:3.13-slim
+# Use Python 3.13.6 Alpine 3.21 image - no CVEs and most secure
+FROM python:3.13.6-alpine3.21
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
+# Update system packages and install build dependencies for Alpine
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache gcc musl-dev && \
+    rm -rf /var/cache/apk/*
 
 # Copy requirements first for better Docker layer caching
 COPY requirements.txt .
@@ -38,5 +39,6 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD python -c "import requests; r=requests.get('http://localhost:8080/health', timeout=10); exit(0 if r.status_code==200 and r.json().get('status')=='healthy' else 1)"
 
-# Use gunicorn for production deployment with SSE support
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "1", "--threads", "8", "--timeout", "120", "--keep-alive", "5", "--access-logfile", "-", "--error-logfile", "-", "--worker-class", "gevent", "app:app"]
+# Use gunicorn with eventlet for optimal SSE performance on Python 3.13
+# Fallback: if eventlet fails, use --worker-class sync --threads 16
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "1", "--worker-connections", "1000", "--timeout", "120", "--keep-alive", "5", "--access-logfile", "-", "--error-logfile", "-", "--worker-class", "eventlet", "app:app"]
