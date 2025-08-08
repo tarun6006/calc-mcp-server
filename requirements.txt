@@ -1,5 +1,8 @@
-flask==3.1.0
+Flask==3.1.1
 python-dotenv==1.0.1
-mcp_utils==1.0.0
+slack-sdk==3.33.4
 requests==2.32.3
+google-generativeai>=0.8.3
+PyYAML==6.0.2
+sseclient-py==1.8.0
 gunicorn==23.0.0
