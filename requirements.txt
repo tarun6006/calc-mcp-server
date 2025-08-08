@@ -1,0 +1,6 @@
+flask==3.1.1
+python-dotenv==1.1.1
+mcp_utils==1.0.0
+requests==2.32.4
+gunicorn==21.2.0
+gevent==23.9.1
