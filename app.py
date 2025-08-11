@@ -1,3 +1,7 @@
+"""
+Refactored Calculator MCP Server
+Modular architecture with separated concerns
+"""
 import os
 from flask import Flask
 from config.settings import setup_logging, log_configuration

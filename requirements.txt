@@ -3,6 +3,7 @@ python-dotenv==1.0.1
 mcp_utils==1.0.0
 requests==2.32.3
 gunicorn==23.0.0
+pyyaml==6.0.2
 pytest==8.3.4
 pytest-mock==3.14.0
 coverage==7.6.9
