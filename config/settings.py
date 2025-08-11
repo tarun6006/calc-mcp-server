@@ -1,3 +1,4 @@
+"""Configuration and environment variable management for Calculator MCP Server"""
 import os
 import logging
 from decimal import getcontext
