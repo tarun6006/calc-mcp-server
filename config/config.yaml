@@ -1,0 +1,173 @@
+# Calculator MCP Server Configuration
+
+# Parser Configuration
+parser:
+  # Word to number mapping
+  word_to_number:
+    # Basic numbers
+    zero: "0"
+    one: "1"
+    two: "2"
+    three: "3"
+    four: "4"
+    five: "5"
+    six: "6"
+    seven: "7"
+    eight: "8"
+    nine: "9"
+    
+    # Teens
+    ten: "10"
+    eleven: "11"
+    twelve: "12"
+    thirteen: "13"
+    fourteen: "14"
+    fifteen: "15"
+    sixteen: "16"
+    seventeen: "17"
+    eighteen: "18"
+    nineteen: "19"
+    
+    # Tens
+    twenty: "20"
+    thirty: "30"
+    forty: "40"
+    fifty: "50"
+    sixty: "60"
+    seventy: "70"
+    eighty: "80"
+    ninety: "90"
+    
+    # Large numbers
+    hundred: "100"
+    thousand: "1000"
+    million: "1000000"
+    billion: "1000000000"
+    trillion: "1000000000000"
+
+  # Operation word mappings
+  operation_words:
+    # Addition
+    plus: "+"
+    add: "+"
+    added: "+"
+    sum: "+"
+    total: "+"
+    combined: "+"
+    together: "+"
+    
+    # Subtraction
+    minus: "-"
+    subtract: "-"
+    subtracted: "-"
+    less: "-"
+    difference: "-"
+    remove: "-"
+    take away: "-"
+    
+    # Multiplication
+    times: "*"
+    multiply: "*"
+    multiplied: "*"
+    product: "*"
+    by: "*"
+    
+    # Division
+    divided: "/"
+    divide: "/"
+    over: "/"
+    quotient: "/"
+    split: "/"
+    
+    # Exponentiation
+    power: "**"
+    raised: "**"
+    exponent: "**"
+    to the power of: "**"
+    squared: "**2"
+    cubed: "**3"
+    
+    # Special functions
+    square root: "sqrt"
+    sqrt: "sqrt"
+    root: "sqrt"
+    factorial: "factorial"
+    absolute: "abs"
+    abs: "abs"
+    
+    # Modulo
+    modulo: "%"
+    mod: "%"
+    remainder: "%"
+
+  # Expression normalization
+  normalization:
+    # Common prefixes to remove
+    prefixes:
+      - "what is"
+      - "calculate"
+      - "compute"
+      - "find"
+      - "solve"
+      - "what's"
+      - "tell me"
+      - "give me"
+      
+    # Characters to remove
+    remove_chars: "[?!]"
+    
+    # Whitespace normalization
+    normalize_whitespace: true
+
+  # Security settings
+  security:
+    # Dangerous patterns to block
+    dangerous_patterns:
+      - "__"
+      - "import"
+      - "exec"
+      - "eval"
+      - "open"
+      - "file"
+      - "subprocess"
+      - "os\\."
+      - "sys\\."
+      - "globals"
+      - "locals"
+      - "getattr"
+      - "setattr"
+      - "delattr"
+      - "dir"
+      - "compile"
+      - "input"
+      - "raw_input"
+
+  # Function mappings for evaluation
+  safe_functions:
+    sqrt: "math.sqrt"
+    factorial: "math.factorial"
+    abs: "abs"
+    round: "round"
+    max: "max"
+    min: "min"
+    sum: "sum"
+    pow: "pow"
+    sin: "math.sin"
+    cos: "math.cos"
+    tan: "math.tan"
+    log: "math.log"
+    ln: "math.log"
+    exp: "math.exp"
+
+# Server Configuration (can be extended for other components)
+server:
+  # Default settings that can be overridden by environment variables
+  name: "calculator-server"
+  version: "1.0"
+  precision: 10
+  max_value: 1e15
+  
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
