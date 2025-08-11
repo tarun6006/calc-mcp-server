@@ -18,6 +18,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY app.py .
+COPY config/ ./config/
+COPY routes/ ./routes/
+COPY services/ ./services/
 
 # Create .env file template (will be overridden by environment variables)
 RUN echo "# Calculator MCP Server Environment Variables" > .env && \
