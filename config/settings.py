@@ -1,6 +1,7 @@
 """Configuration and environment variable management for Calculator MCP Server"""
 import os
 import logging
+import yaml
 from decimal import getcontext
 from dotenv import load_dotenv
 
@@ -8,6 +9,22 @@ logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
+
+def load_config():
+    """Load configuration from YAML file"""
+    config_path = os.path.join(os.path.dirname(__file__), 'config.yaml')
+    try:
+        with open(config_path, 'r', encoding='utf-8') as file:
+            return yaml.safe_load(file)
+    except FileNotFoundError:
+        logger.warning(f"Configuration file not found: {config_path}. Using defaults.")
+        return {}
+    except yaml.YAMLError as e:
+        logger.error(f"Error parsing YAML configuration: {e}")
+        return {}
+
+# Load YAML configuration
+CONFIG = load_config()
 
 # Calculator Server Configuration
 CALC_SERVER_NAME = os.getenv("CALC_SERVER_NAME", "calculator-server")
