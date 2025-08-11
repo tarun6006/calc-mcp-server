@@ -1,6 +1,8 @@
 # Calculator MCP Server Configuration
+# Note: Server settings (name, version, precision, max_value) are configured via environment variables
+# This file contains only parser-specific configuration data that needs to be in YAML format
 
-# Parser Configuration
+# Parser Configuration - Complex data structures that belong in YAML
 parser:
   # Word to number mapping
   word_to_number:
@@ -158,16 +160,3 @@ parser:
     log: "math.log"
     ln: "math.log"
     exp: "math.exp"
-
-# Server Configuration (can be extended for other components)
-server:
-  # Default settings that can be overridden by environment variables
-  name: "calculator-server"
-  version: "1.0"
-  precision: 10
-  max_value: 1e15
-  
-# Logging Configuration
-logging:
-  level: "INFO"
-  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
