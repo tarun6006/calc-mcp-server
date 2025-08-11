@@ -6,6 +6,43 @@ import pytest
 import json
 from unittest.mock import patch, Mock
 from app import app
+from config.settings import CONFIG
+
+class TestConfigLoading:
+    """Test configuration loading functionality"""
+    
+    def test_mcp_tools_loaded_from_config(self):
+        """Test that MCP tools are loaded from config.yaml"""
+        mcp_tools = CONFIG.get('mcp_tools', {})
+        
+        # Verify all expected tools are present
+        expected_tools = ['add', 'subtract', 'multiply', 'divide', 'power', 
+                         'sqrt', 'factorial', 'modulo', 'absolute', 'parse_expression']
+        
+        for tool in expected_tools:
+            assert tool in mcp_tools, f"Tool '{tool}' not found in config"
+            
+            # Verify each tool has required structure
+            tool_config = mcp_tools[tool]
+            assert 'description' in tool_config, f"Tool '{tool}' missing description"
+            assert 'inputSchema' in tool_config, f"Tool '{tool}' missing inputSchema"
+            
+            # Verify inputSchema structure
+            input_schema = tool_config['inputSchema']
+            assert 'type' in input_schema, f"Tool '{tool}' inputSchema missing type"
+            assert 'properties' in input_schema, f"Tool '{tool}' inputSchema missing properties"
+            assert 'required' in input_schema, f"Tool '{tool}' inputSchema missing required fields"
+    
+    def test_config_structure_validity(self):
+        """Test that config has expected structure"""
+        assert isinstance(CONFIG, dict), "CONFIG should be a dictionary"
+        assert 'mcp_tools' in CONFIG, "CONFIG should contain 'mcp_tools' section"
+        assert 'parser' in CONFIG, "CONFIG should contain 'parser' section"
+        
+        # Verify parser config structure
+        parser_config = CONFIG.get('parser', {})
+        assert 'word_to_number' in parser_config, "Parser config should contain 'word_to_number'"
+        assert 'operation_words' in parser_config, "Parser config should contain 'operation_words'"
 
 class TestHealthEndpoint:
     """Test health check endpoint"""

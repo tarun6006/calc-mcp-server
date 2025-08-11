@@ -1,6 +1,128 @@
 # Calculator MCP Server Configuration
 # Note: Server settings (name, version, precision, max_value) are configured via environment variables
-# This file contains only parser-specific configuration data that needs to be in YAML format
+# This file contains parser-specific configuration data and MCP tools schema that need to be in YAML format
+
+# MCP Tools Schema - Defines available tools and their input schemas
+mcp_tools:
+  add:
+    description: "Add multiple numbers together. Can handle 2 or more numbers."
+    inputSchema:
+      type: "object"
+      properties:
+        numbers:
+          type: "array"
+          items:
+            type: "number"
+          description: "List of numbers to add"
+      required: ["numbers"]
+
+  subtract:
+    description: "Subtract numbers. First number minus all subsequent numbers."
+    inputSchema:
+      type: "object"
+      properties:
+        minuend:
+          type: "number"
+          description: "The number to subtract from"
+        subtrahends:
+          type: "array"
+          items:
+            type: "number"
+          description: "List of numbers to subtract"
+      required: ["minuend", "subtrahends"]
+
+  multiply:
+    description: "Multiply multiple numbers together. Can handle 2 or more numbers."
+    inputSchema:
+      type: "object"
+      properties:
+        numbers:
+          type: "array"
+          items:
+            type: "number"
+          description: "List of numbers to multiply"
+      required: ["numbers"]
+
+  divide:
+    description: "Divide numbers. First number divided by all subsequent numbers."
+    inputSchema:
+      type: "object"
+      properties:
+        dividend:
+          type: "number"
+          description: "The number to be divided"
+        divisors:
+          type: "array"
+          items:
+            type: "number"
+          description: "List of numbers to divide by"
+      required: ["dividend", "divisors"]
+
+  power:
+    description: "Calculate exponentiation (base raised to the power of exponent)."
+    inputSchema:
+      type: "object"
+      properties:
+        base:
+          type: "number"
+          description: "The base number"
+        exponent:
+          type: "number"
+          description: "The exponent"
+      required: ["base", "exponent"]
+
+  sqrt:
+    description: "Calculate square root of a number."
+    inputSchema:
+      type: "object"
+      properties:
+        number:
+          type: "number"
+          description: "The number to find square root of"
+      required: ["number"]
+
+  factorial:
+    description: "Calculate factorial of a number (n!)."
+    inputSchema:
+      type: "object"
+      properties:
+        number:
+          type: "integer"
+          description: "The number to calculate factorial of (must be non-negative integer)"
+      required: ["number"]
+
+  modulo:
+    description: "Calculate modulo (remainder of division)."
+    inputSchema:
+      type: "object"
+      properties:
+        dividend:
+          type: "number"
+          description: "The number to be divided"
+        divisor:
+          type: "number"
+          description: "The number to divide by"
+      required: ["dividend", "divisor"]
+
+  absolute:
+    description: "Calculate absolute value of a number."
+    inputSchema:
+      type: "object"
+      properties:
+        number:
+          type: "number"
+          description: "The number to find absolute value of"
+      required: ["number"]
+
+  parse_expression:
+    description: "Parse and evaluate complex mathematical expressions from natural language. Handles multi-number operations, mixed symbols/words, and complex expressions."
+    inputSchema:
+      type: "object"
+      properties:
+        expression:
+          type: "string"
+          description: "Natural language mathematical expression"
+      required: ["expression"]
 
 # Parser Configuration - Complex data structures that belong in YAML
 parser:

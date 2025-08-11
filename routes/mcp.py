@@ -3,165 +3,15 @@ import json
 import logging
 from flask import Blueprint, request, jsonify
 from services.calculator import CalculatorEngine
+from config.settings import CONFIG
 
 logger = logging.getLogger(__name__)
 
 mcp_bp = Blueprint('mcp', __name__)
 calculator = CalculatorEngine()
 
-# MCP tools registry
-MCP_TOOLS = {
-    "add": {
-        "description": "Add multiple numbers together. Can handle 2 or more numbers.",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "numbers": {
-                    "type": "array",
-                    "items": {"type": "number"},
-                    "description": "List of numbers to add"
-                }
-            },
-            "required": ["numbers"]
-        }
-    },
-    "subtract": {
-        "description": "Subtract numbers. First number minus all subsequent numbers.",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "minuend": {
-                    "type": "number",
-                    "description": "The number to subtract from"
-                },
-                "subtrahends": {
-                    "type": "array",
-                    "items": {"type": "number"},
-                    "description": "List of numbers to subtract"
-                }
-            },
-            "required": ["minuend", "subtrahends"]
-        }
-    },
-    "multiply": {
-        "description": "Multiply multiple numbers together. Can handle 2 or more numbers.",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "numbers": {
-                    "type": "array",
-                    "items": {"type": "number"},
-                    "description": "List of numbers to multiply"
-                }
-            },
-            "required": ["numbers"]
-        }
-    },
-    "divide": {
-        "description": "Divide numbers. First number divided by all subsequent numbers.",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "dividend": {
-                    "type": "number",
-                    "description": "The number to be divided"
-                },
-                "divisors": {
-                    "type": "array",
-                    "items": {"type": "number"},
-                    "description": "List of numbers to divide by"
-                }
-            },
-            "required": ["dividend", "divisors"]
-        }
-    },
-    "power": {
-        "description": "Calculate exponentiation (base raised to the power of exponent).",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "base": {
-                    "type": "number",
-                    "description": "The base number"
-                },
-                "exponent": {
-                    "type": "number",
-                    "description": "The exponent"
-                }
-            },
-            "required": ["base", "exponent"]
-        }
-    },
-    "sqrt": {
-        "description": "Calculate square root of a number.",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "number": {
-                    "type": "number",
-                    "description": "The number to find square root of"
-                }
-            },
-            "required": ["number"]
-        }
-    },
-    "factorial": {
-        "description": "Calculate factorial of a number (n!).",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "number": {
-                    "type": "integer",
-                    "description": "The number to calculate factorial of (must be non-negative integer)"
-                }
-            },
-            "required": ["number"]
-        }
-    },
-    "modulo": {
-        "description": "Calculate modulo (remainder of division).",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "dividend": {
-                    "type": "number",
-                    "description": "The number to be divided"
-                },
-                "divisor": {
-                    "type": "number",
-                    "description": "The number to divide by"
-                }
-            },
-            "required": ["dividend", "divisor"]
-        }
-    },
-    "absolute": {
-        "description": "Calculate absolute value of a number.",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "number": {
-                    "type": "number",
-                    "description": "The number to find absolute value of"
-                }
-            },
-            "required": ["number"]
-        }
-    },
-    "parse_expression": {
-        "description": "Parse and evaluate complex mathematical expressions from natural language. Handles multi-number operations, mixed symbols/words, and complex expressions.",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "expression": {
-                    "type": "string",
-                    "description": "Natural language mathematical expression"
-                }
-            },
-            "required": ["expression"]
-        }
-    }
-}
+# Load MCP tools registry from config
+MCP_TOOLS = CONFIG.get('mcp_tools', {})
 
 @mcp_bp.route('/mcp', methods=['POST'])
 def handle_mcp_request():
@@ -181,7 +31,29 @@ def handle_mcp_request():
         
         logger.debug(f"MCP request: {method} with params: {params}")
         
-        if method == 'tools/list':
+        if method == 'initialize':
+            # MCP protocol initialization
+            protocol_version = params.get('protocolVersion', '2024-11-05')
+            client_info = params.get('clientInfo', {})
+            
+            logger.info(f"MCP client initialized: {client_info.get('name', 'unknown')} v{client_info.get('version', 'unknown')}")
+            
+            return jsonify({
+                "jsonrpc": "2.0",
+                "result": {
+                    "protocolVersion": protocol_version,
+                    "capabilities": {
+                        "tools": {}
+                    },
+                    "serverInfo": {
+                        "name": "calculator-server",
+                        "version": "1.0.0"
+                    }
+                },
+                "id": request_id
+            })
+        
+        elif method == 'tools/list':
             return jsonify({
                 "jsonrpc": "2.0",
                 "result": {"tools": [{"name": name, **schema} for name, schema in MCP_TOOLS.items()]},
