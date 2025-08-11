@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+"""
+Test runner script for Calculator MCP Server with coverage reporting
+Enforces 90% code coverage requirement
+"""
 import subprocess
 import sys
 import os
