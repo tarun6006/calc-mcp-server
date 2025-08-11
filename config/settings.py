@@ -13,18 +13,38 @@ load_dotenv()
 def load_config():
     """Load configuration from YAML file"""
     config_path = os.path.join(os.path.dirname(__file__), 'config.yaml')
+    
+    # Set up basic logging for config loading (before main logging setup)
+    config_logger = logging.getLogger('config_loader')
+    if not config_logger.handlers:
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
+        handler.setFormatter(formatter)
+        config_logger.addHandler(handler)
+        config_logger.setLevel(logging.INFO)
+    
     try:
         with open(config_path, 'r', encoding='utf-8') as file:
-            return yaml.safe_load(file)
+            config_data = yaml.safe_load(file)
+            config_logger.info(f"Successfully loaded {len(config_data)} sections from {config_path}")
+            return config_data
     except FileNotFoundError:
-        logger.warning(f"Configuration file not found: {config_path}. Using defaults.")
+        config_logger.warning(f"Configuration file not found: {config_path}. Using defaults.")
         return {}
     except yaml.YAMLError as e:
-        logger.error(f"Error parsing YAML configuration: {e}")
+        config_logger.error(f"Error parsing YAML configuration: {e}")
+        return {}
+    except Exception as e:
+        config_logger.error(f"Unexpected error loading config: {e}")
         return {}
 
-# Load YAML configuration
-CONFIG = load_config()
+# Load YAML configuration with fallback
+try:
+    CONFIG = load_config()
+except Exception as e:
+    # Ensure CONFIG is always defined, even if loading fails
+    logging.error(f"Critical error loading configuration: {e}")
+    CONFIG = {}
 
 # Calculator Server Configuration
 CALC_SERVER_NAME = os.getenv("CALC_SERVER_NAME", "calculator-server")
